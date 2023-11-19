@@ -32,7 +32,10 @@
     declare -gr PREFIX_FAIL="${PREFIX}${SET_COLOR_RED}Failure:${RESET_COLOR} "
     declare -gr PREFIX_PASS="${PREFIX}${SET_COLOR_GREEN}Success:${RESET_COLOR} "
 
-  declare EXCLUSIVE_KBM=true
+  declare -g EXCLUSIVE_KBM=true       # --kbm-only
+  declare -g RESTART_SERVICE=true     # --restart-now
+                                      # --undo
+                                      # --hugepages
   declare -gA INPUT_EVENT_DICTIONARY
 
   # <remarks>Filenames</remarks>
@@ -161,6 +164,10 @@
 
   function restart_service
   {
+    if ! "${RESTART_SERVICE}"; then
+      return 0
+    fi
+
     if ! systemctl restart libvirtd &> /dev/null; then
       print_error_to_log "Could not restart system service 'libvirtd.'"
       return 1
