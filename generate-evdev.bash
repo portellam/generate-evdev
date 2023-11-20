@@ -16,7 +16,7 @@
 # -append output if hugepages is enabled.
 
 # <params>
-  declare -gA INPUT_EVENT_DICTIONARY
+  declare -gA ALL_INPUT_EVENT_DICTIONARY KEYBOARD_INPUT_INDEX_DICTIONARY MOUSE_INPUT_INDEX_DICTIONARY # OTHER_INPUT_INDEX_DICTIONARY
 
   declare -r SCRIPT_NAME="$( basename ${0} )"
   declare -r REPO_NAME="generate-evdev"
@@ -45,7 +45,7 @@
 
   # <summary>Execution flags</summary>
     declare -g DUMP_XML=false
-    declare -g EXCLUSIVE_KBM=false
+    # declare -g EXCLUSIVE_KBM=true
     declare -g INCLUDE_HUGEPAGES=false
     declare -g RESTART_SERVICE=false
     declare -g UNDO_CHANGES=false
@@ -81,12 +81,12 @@
       fi
     }
 
-    function is_option_include_only_keyboard_and_mouse
-    {
-      if [[ "${1}" == "--kbm-only" ]]; then
-        EXCLUSIVE_KBM=true
-      fi
-    }
+    # function is_option_include_only_keyboard_and_mouse
+    # {
+    #   if [[ "${1}" == "--kbm-only" ]]; then
+    #     EXCLUSIVE_KBM=true
+    #   fi
+    # }
 
     function is_option_restart_service
     {
@@ -127,7 +127,7 @@
       is_option_undo_changes "$@" || return 1
       is_option_dump_xml "$@" || return 1
       is_option_include_hugepages "$@" || return 1
-      is_option_include_only_keyboard_and_mouse "$@" || return 1
+      # is_option_include_only_keyboard_and_mouse "$@" || return 1
       is_option_restart_service "$@" || return 1
     }
 
@@ -168,7 +168,10 @@
         "  -h, --help\t\tPrint this help and exit."
         "  --dump-xml\t\tDump QEMU commandline (XML) output to file."
         "  --hugepages\t\tInclude Hugepages as device for Libvirt/QEMU."
-        "  --kbm-only\t\tInclude only Keyboard and/or Mouse related devices in Evdev."
+
+        # NOTE: Given Evdev currently likely does not support devices outside of Keyboards and Mice, I will comment this out for now.
+        # "  --kbm-only\t\tInclude only Keyboard and/or Mouse related devices in Evdev."
+
         "  --restart-service\tRestart Libvirtd system service after setup."
         "  --undo-changes\tUndo changes; restore file backups."
       )
@@ -257,50 +260,73 @@
           event_device=""
         fi
 
-        INPUT_EVENT_DICTIONARY["${input_device}"]="${event_device}"
+        ALL_INPUT_EVENT_DICTIONARY["${input_device}"]="${event_device}"
       done
 
-      for input_device in "${!INPUT_EVENT_DICTIONARY[@]}"; do
-        local event_device="${INPUT_EVENT_DICTIONARY["${input_device}"]}"
-        local event_id=$( echo "${event_device}" | grep --only-matching --extended-regexp '[0-9]+' )
+      readonly ALL_INPUT_EVENT_DICTIONARY
 
-        # NOTE: Check if input device is a keyboard, mouse, both, or related.
-        if "${EXCLUSIVE_KBM}" \
-          && ! $( echo "${input_device}" | grep --ignore-case --regexp="kbd" --regexp="mouse" &> /dev/null ) \
-          && ! $( xinput list --short "${event_id}" | grep --regexp "keyboard" --regexp "pointer" &> /dev/null ); then
-            unset INPUT_EVENT_DICTIONARY["${input_device}"]
-        fi
-      done
-
-      if "${EXCLUSIVE_KBM}"; then
-        echo -e "${PREFIX}Whitelisting only Keyboard and Mouse devices."
-      fi
-
-      if ! is_enum_not_empty "INPUT_EVENT_DICTIONARY"; then
+      if ! is_enum_not_empty "ALL_INPUT_EVENT_DICTIONARY"; then
+        print_error_to_log "No input devices found."
         return 1
       fi
-
-      readonly INPUT_EVENT_DICTIONARY
     }
 
     function print_evdev
     {
       echo -e "${PREFIX}Below is a list of referenced device IDs, and their actual device IDs (Event and Input devices, respectively)."
-      echo -e "${PREFIX}You may copy the Event device ID, and append it to Evdev (QEMU commandline for a Virtual KVM (Keyboard-Video-Mouse) or peripheral switch)."
-      echo -e "\tEvent ID\tInput ID"
+      echo -e "\nEvent ID\tSupported?\tInput ID"
 
-      for input_device in "${!INPUT_EVENT_DICTIONARY[@]}"; do
-        local event_device="${INPUT_EVENT_DICTIONARY["${input_device}"]}"
-        echo -en "\t"
+      for input_device in "${!ALL_INPUT_EVENT_DICTIONARY[@]}"; do
+        local event_device="${ALL_INPUT_EVENT_DICTIONARY["${input_device}"]}"
+        local device_is_not_supported=false
+        local supported_string="No"
 
         if [[ -z "${event_device}" ]]; then
           event_device="N/A"
         fi
 
-        echo -en "${event_device}\t\t"
-        echo -en "${input_device}"
-        echo
+        # NOTE: Given Evdev currently likely does not support devices outside of Keyboards and Mice, this will highlight incompatible devices.
+        if ! is_string "${KEYBOARD_INPUT_INDEX_DICTIONARY["${input_device}"]}" &> /dev/null \
+          && ! is_string "${MOUSE_INPUT_INDEX_DICTIONARY["${input_device}"]}" &> /dev/null; then
+          device_is_not_supported=true
+        fi
+
+        if "${device_is_not_supported}"; then
+          echo -en "${SET_COLOR_RED}"
+
+        else
+          echo -en "${SET_COLOR_GREEN}"
+          supported_string="Yes"
+        fi
+
+        echo -en "${event_device}\t\t${supported_string}\t\t${input_device}${RESET_COLOR}\n"
       done
+
+      echo -e "\n${PREFIX}You may copy the following XML output, and append to a virtual machine's XML file.\n"
+      echo -e "${SET_COLOR_YELLOW}<qemu:commandline>"
+
+      for input_device in "${!KEYBOARD_INPUT_INDEX_DICTIONARY[@]}"; do
+        local -i index="${KEYBOARD_INPUT_INDEX_DICTIONARY["${input_device}"]}"
+        echo -e "\t<qemu:arg value="-object"/>"
+        echo -e "\t<qemu:arg value="input-linux,id=kbd${index},evdev=/dev/input/by-id/${input_device},grab_all=on,repeat=on"/>"
+      done
+
+      for input_device in "${!MOUSE_INPUT_INDEX_DICTIONARY[@]}"; do
+        local -i index="${MOUSE_INPUT_INDEX_DICTIONARY["${input_device}"]}"
+        echo -e "\t<qemu:arg value="-object"/>"
+        echo -e "\t<qemu:arg value="input-linux,id=mouse${index},evdev=/dev/input/by-id/${input_device}"/>"
+      done
+
+      # NOTE: Given Evdev currently likely does not support devices outside of Keyboards and Mice, I will comment this out for now.
+      # if ! "${EXCLUSIVE_KBM}"; then
+      #   for input_device in "${!OTHER_INPUT_INDEX_DICTIONARY[@]}"; do
+      #     local -i index="${OTHER_INPUT_INDEX_DICTIONARY["${input_device}"]}"
+      #     # echo -e "\t<qemu:arg value="-object"/>"
+      #     # echo -e "\t<qemu:arg value="input-linux,id=PLACEHOLDER${index},evdev=/dev/input/by-id/${input_device}"/>"   # TODO: Replace "PLACEHOLDER" with appropriate device ID.
+      #   done
+      # fi
+
+      echo -e "/<qemu:commandline>${RESET_COLOR}"
     }
 
     function prepare_files
@@ -342,6 +368,102 @@
 
       if ! systemctl restart libvirtd &> /dev/null; then
         print_error_to_log "Could not restart system service 'libvirtd.'"
+        return 1
+      fi
+    }
+
+    function sort_evdev
+    {
+      local -A partial_input_device_dictionary
+      local -i total_keyboard_devices=0
+      local -i total_mouse_devices=0
+      # local -i total_other_devices=0
+
+      for input_device in "${!ALL_INPUT_EVENT_DICTIONARY[@]}"; do
+        local event_device="${ALL_INPUT_EVENT_DICTIONARY["${input_device}"]}"
+        local event_id=$( echo "${event_device}" | grep --only-matching --extended-regexp '[0-9]+' )
+
+        local is_keyboard=false
+        local is_mouse=false
+
+        local input_device_partial_basename=""
+        local input_device_match_suffix="event-if"
+        local input_device_partial_suffix="event-"
+        local partial_input_device="${input_device}"
+
+        if $( echo "${input_device}" | grep --ignore-case --regexp="kbd" &> /dev/null ); then
+          is_keyboard=true
+        fi
+
+        if ! "${is_keyboard}" \
+          && $( echo "${input_device}" | grep --ignore-case --regexp="mouse" &> /dev/null ); then
+          is_mouse=true
+        fi
+
+        if ! "${is_keyboard}" \
+          && ! "${is_mouse}" \
+          && $( echo "${input_device}" | grep "${input_device_match_suffix}"* &> /dev/null ); then
+          partial_input_device="${input_device%${input_device_match_suffix}*}"
+          partial_input_device="${partial_input_device}${input_device_partial_suffix}"
+          partial_input_device_dictionary["${input_device}"]="${partial_input_device}"
+        fi
+
+        case true in
+          "${is_keyboard}" )
+            total_keyboard_devices=$(( total_keyboard_devices + 1 ))
+            KEYBOARD_INPUT_INDEX_DICTIONARY["${input_device}"]="${total_keyboard_devices}" ;;
+
+          "${is_mouse}" )
+            total_mouse_devices=$(( total_mouse_devices + 1 ))
+            MOUSE_INPUT_INDEX_DICTIONARY["${input_device}"]="${total_mouse_devices}" ;;
+
+          # NOTE: Given Evdev currently likely does not support devices outside of Keyboards and Mice, I will comment this out for now.
+          # * )
+          #   total_other_devices=$(( total_other_devices + 1 ))
+          #   OTHER_INPUT_INDEX_DICTIONARY["${input_device}"]="${total_other_devices}" ;;
+        esac
+      done
+
+      for input_device in "${!partial_input_device_dictionary[@]}"; do
+        local is_keyboard=false
+        local is_mouse=false
+
+        local partial_input_device="${partial_input_device_dictionary["${input_device}"]}"
+        local keyboard_input_device="${partial_input_device}kbd"
+        local mouse_input_device="${partial_input_device}mouse"
+
+        if is_string "${KEYBOARD_INPUT_INDEX_DICTIONARY["${keyboard_input_device}"]}"; then
+          total_keyboard_devices=$(( total_keyboard_devices + 1 ))
+          KEYBOARD_INPUT_INDEX_DICTIONARY["${input_device}"]="${total_keyboard_devices}"
+          continue
+        fi
+
+        if is_string "${KEYBOARD_INPUT_INDEX_DICTIONARY["${mouse_input_device}"]}"; then
+          total_mouse_devices=$(( total_mouse_devices + 1 ))
+          MOUSE_INPUT_INDEX_DICTIONARY["${input_device}"]="${total_mouse_devices}"
+          continue
+        fi
+
+        # NOTE: Given Evdev currently likely does not support devices outside of Keyboards and Mice, I will comment this out for now.
+        # total_other_devices=$(( total_other_devices + 1 ))
+        # OTHER_INPUT_INDEX_DICTIONARY["${input_device}"]="${total_other_devices}" ;;
+      done
+
+      readonly KEYBOARD_INPUT_INDEX_DICTIONARY MOUSE_INPUT_INDEX_DICTIONARY # OTHER_INPUT_INDEX_DICTIONARY
+
+      # if ! "${EXCLUSIVE_KBM}"; then
+      #   return 0
+      # fi
+
+      # echo -e "${PREFIX}Whitelisting only Keyboard and Mouse devices."
+
+      if ! is_enum_not_empty "KEYBOARD_INPUT_INDEX_DICTIONARY"; then
+        print_error_to_log "No Keyboard device(s) found."
+        return 1
+      fi
+
+      if ! is_enum_not_empty "MOUSE_INPUT_INDEX_DICTIONARY"; then
+        print_error_to_log "No Mouse device(s) found."
         return 1
       fi
     }
@@ -402,8 +524,8 @@
       local -a file1_cgroups_output
 
       if ! "${UNDO_CHANGES}"; then
-        for input_device in ${!INPUT_EVENT_DICTIONARY[@]}; do
-          local event_device="${INPUT_EVENT_DICTIONARY["${input_device}"]}"
+        for input_device in ${!ALL_INPUT_EVENT_DICTIONARY[@]}; do
+          local event_device="${ALL_INPUT_EVENT_DICTIONARY["${input_device}"]}"
 
           file1_cgroups_output+=(
             "    \"/dev/input/by-id/${event_device}\","
@@ -474,6 +596,7 @@
     if ! is_sudo_user \
       || ! get_options "$@" \
       || ! get_evdev \
+      || ! sort_evdev \
       || ! print_evdev \
       || ! prepare_files; then
       return 1
