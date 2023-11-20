@@ -349,7 +349,9 @@
     function write_to_files
     {
       local -a file1_output=(
+        ""
         "${FILE_WATERMARK[@]}"
+        ""
         "### User permissions ###"
         "group = \"user\""
       )
@@ -368,7 +370,7 @@
         )
       fi
 
-      file1_output=(
+      file1_output+=(
         ""
         "### Hugepages ###"
       )
@@ -404,7 +406,6 @@
           local event_device="${INPUT_EVENT_DICTIONARY["${input_device}"]}"
 
           file1_cgroups_output+=(
-            "    \"/dev/input/by-id/${input_device}\","
             "    \"/dev/input/by-id/${event_device}\","
           )
         done
