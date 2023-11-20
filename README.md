@@ -11,7 +11,8 @@ Generates Evdev for the current system. Virtual KVM (Keyboard-Video-Mouse) switc
             --set-user            Sets user ownership of Libvirt Input devices to current user. Default is root.
             --undo-changes        Undo changes; restore file backups.
 
-## What is VFIO?
-* see hyperlink:    https://www.kernel.org/doc/html/latest/driver-api/vfio.html
+## What is Evdev?
+* about:            https://passthroughpo.st/using-evdev-passthrough-seamless-vm-input/
 * community:        https://old.reddit.com/r/VFIO
 * a useful guide:   https://wiki.archlinux.org/title/PCI_passthrough_via_OVMF
+* Wikipedia:        https://en.wikipedia.org/wiki/Evdev
