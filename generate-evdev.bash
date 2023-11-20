@@ -544,6 +544,7 @@
         )
 
         file2_output+=(
+          "#/dev/hugepages rw,"
         )
       else
         file1_output+=(
