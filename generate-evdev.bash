@@ -233,7 +233,7 @@
 
     function print_output_to_log
     {
-      echo -e "${PREFIX_PROMPT}${1}" >&1
+      echo -e "${PREFIX}${1}" >&1
     }
 
   # <summary>Data-type validation</summary>
@@ -313,7 +313,7 @@
 
     function print_evdev
     {
-      echo -e "${PREFIX}Below is a list of referenced device IDs, and their actual device IDs (Event and Input devices, respectively)."
+      echo -e "Below is a list of referenced device IDs, and their actual device IDs (Event and Input devices, respectively)."
       echo -e "\nSupported?\tEvent ID\tInput ID"
 
       for input_device in "${!ALL_INPUT_EVENT_DICTIONARY[@]}"; do
@@ -341,7 +341,7 @@
         echo -en "${supported_string}\t\t${event_device}\t\t${input_device}\n"
       done
 
-      echo -e "\n${PREFIX}You may copy the following XML output, and append to a virtual machine's XML file.\n"
+      echo -e "\nYou may copy the following XML output, and append to a virtual machine's XML file.\n"
       echo -e "<qemu:commandline>"
 
       for input_device in "${!KEYBOARD_INPUT_INDEX_DICTIONARY[@]}"; do
