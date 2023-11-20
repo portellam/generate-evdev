@@ -9,12 +9,6 @@
 # Maintainer(s):  Alex Portell <github.com/portellam>
 #
 
-# TODO:
-# -whitelist only keyboard and/or mouse devices, and their related devices.
-# -parse all devices.
-# -append output if specified user or set to default (root).
-# -append output if hugepages is enabled.
-
 # <params>
   declare -gA ALL_INPUT_EVENT_DICTIONARY KEYBOARD_INPUT_INDEX_DICTIONARY MOUSE_INPUT_INDEX_DICTIONARY # OTHER_INPUT_INDEX_DICTIONARY
 
@@ -524,13 +518,32 @@
       local -a file1_cgroups_output
 
       if ! "${UNDO_CHANGES}"; then
-        for input_device in ${!ALL_INPUT_EVENT_DICTIONARY[@]}; do
+        for input_device in ${!KEYBOARD_INPUT_INDEX_DICTIONARY[@]}; do
           local event_device="${ALL_INPUT_EVENT_DICTIONARY["${input_device}"]}"
 
           file1_cgroups_output+=(
+            "    \"/dev/input/by-id/${input_device}\","
             "    \"/dev/input/by-id/${event_device}\","
           )
         done
+
+        for input_device in ${!MOUSE_INPUT_INDEX_DICTIONARY[@]}; do
+          local event_device="${ALL_INPUT_EVENT_DICTIONARY["${input_device}"]}"
+
+          file1_cgroups_output+=(
+            "    \"/dev/input/by-id/${input_device}\","
+            "    \"/dev/input/by-id/${event_device}\","
+          )
+        done
+
+        # for input_device in ${!OTHER_INPUT_INDEX_DICTIONARY[@]}; do
+        #   local event_device="${ALL_INPUT_EVENT_DICTIONARY["${input_device}"]}"
+
+        #   file1_cgroups_output+=(
+        #     "    \"/dev/input/by-id/${input_device}\","
+        #     "    \"/dev/input/by-id/${event_device}\","
+        #   )
+        # done
       fi
 
       file1_output+=(
