@@ -230,15 +230,15 @@
   # <summary>File manipulation</summary>
     function write_ref_enum_to_file
     {
-      if ! [[ -e "${2}" ]] \
-        || [[ -z "${1}" ]]; then
+      if [[ -z "${2}" ]]; then
+        print_error_to_log "Filename is not defined."
         return 1
       fi
 
       local -nr reference="${1}"
       local -r file="${2}"
 
-      for line in ${reference[*]}; do
+      for line in "${reference[@]}"; do
         if ! sudo echo -e "${line}" >> "${file}"; then
           print_error_to_log "Could not append to file '${file}'."
           return 1
@@ -312,7 +312,7 @@
 
       local -r file1_backup="${QEMU_DEST_PATH}.old"
 
-      if ! "${UNDO_CHANGES}"; then
+      if "${UNDO_CHANGES}"; then
         if [[ -e "${file1_backup}" ]] \
           && ! cp "${file1_backup}" "${QEMU_DEST_PATH}"; then
           print_error_to_log "Could not restore file '${QEMU_DEST_PATH}'"
@@ -400,12 +400,13 @@
       local -a file1_cgroups_output
 
       if ! "${UNDO_CHANGES}"; then
-        for input_device in ${INPUT_EVENT_DICTIONARY[@]}; do
-          file1_cgroups_output+=( "    \"/dev/input/by-id/${input_device}\"," )
-        done
+        for input_device in ${!INPUT_EVENT_DICTIONARY[@]}; do
+          local event_device="${INPUT_EVENT_DICTIONARY["${input_device}"]}"
 
-        for input_device in ${INPUT_DEVICES_ENUM[@]}; do
-          file1_cgroups_output+=( "    \"/dev/input/by-id/${input_device}\"," )
+          file1_cgroups_output+=(
+            "    \"/dev/input/by-id/${input_device}\","
+            "    \"/dev/input/by-id/${event_device}\","
+          )
         done
       fi
 
@@ -427,7 +428,7 @@
         "    \"/dev/rtc\", \"/dev/hpet\""
       )
 
-      if ${PRE_SETUP_DO_EXECUTE_EVDEV}; then
+      if ! "${UNDO_CHANGES}"; then
         file1_output+=(
           "${file1_cgroups_output[@]}"
           "${file1_default_cgroups_output[@]}"
@@ -460,8 +461,7 @@
         "]"
       )
 
-      if ! prepare_files \
-        || ! write_ref_enum_to_file "file1_output" "${QEMU_DEST_PATH}" \
+      if ! write_ref_enum_to_file "file1_output" "${QEMU_DEST_PATH}" \
         || ! write_ref_enum_to_file "file2_output" "${APPARMOR_QEMU_DEST_PATH}" \
         || ! restart_service; then
         return 1
@@ -473,7 +473,8 @@
     if ! is_sudo_user \
       || ! get_options "$@" \
       || ! get_evdev \
-      || ! print_evdev; then
+      || ! print_evdev \
+      || ! prepare_files; then
       return 1
     fi
 
