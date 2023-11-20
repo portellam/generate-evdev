@@ -41,13 +41,17 @@
     declare -g DUMP_XML=false
     # declare -g EXCLUSIVE_KBM=true
     declare -g INCLUDE_HUGEPAGES=false
+    declare -g OUTPUT_EVENT_PATHS=false
     declare -g RESTART_SERVICE=false
+    declare -g SET_PERMISSIONS_TO_USER=false
     declare -g UNDO_CHANGES=false
 
   # <summary>Filenames</summary>
     declare -gr APPARMOR_QEMU_DEST_PATH="/etc/apparmor.d/local/abstractions/libvirt-qemu"
     declare -gr QEMU_DEST_PATH="/etc/libvirt/qemu.conf"
     declare -gr QEMU_SRC_PATH=$( dirname "${0}" )"/qemu.conf"
+
+  declare -r LOGIN_USER=$( who am i | awk '{print $1}' )
 # </params>
 
 # <functions>
@@ -64,6 +68,7 @@
     function is_option_dump_xml
     {
       if [[ "${1}" == "--dump-xml" ]]; then
+        print_output_to_log "Dumping QEMU commandlines in XML format."
         DUMP_XML=true
       fi
     }
@@ -71,6 +76,7 @@
     function is_option_include_hugepages
     {
       if [[ "${1}" == "--hugepages" ]]; then
+        print_output_to_log "Adding Hugepages support."
         INCLUDE_HUGEPAGES=true
       fi
     }
@@ -82,6 +88,14 @@
     #   fi
     # }
 
+    function is_option_output_event_paths
+    {
+      if [[ "${1}" == "--output-event-paths" ]]; then
+        OUTPUT_EVENT_PATHS=true
+        print_output_to_log "Evdev output exclusive to Event paths."
+      fi
+    }
+
     function is_option_restart_service
     {
       if [[ "${1}" == "--restart-service" ]]; then
@@ -89,9 +103,18 @@
       fi
     }
 
+    function is_option_set_permissions_to_user
+    {
+      if [[ "${1}" == "--set-user" ]]; then
+        print_output_to_log "Set user for Libvirt input devices: '$LOGIN_USER'"
+        RESTART_SERVICE=true
+      fi
+    }
+
     function is_option_undo_changes
     {
       if [[ "${1}" == "--undo-changes" ]]; then
+        print_output_to_log "Undoing changes."
         UNDO_CHANGES=true
       fi
     }
@@ -117,13 +140,15 @@
 
     function parse_this_option
     {
-      is_option_print_help "$@" || return 1
-      is_option_undo_changes "$@" || return 1
-      is_option_dump_xml "$@" || return 1
-      is_option_include_hugepages "$@" || return 1
-      # is_option_include_only_keyboard_and_mouse "$@" || return 1
-      is_option_restart_service "$@" || return 1
-    }
+      is_option_print_help "$@" && return 0
+      is_option_dump_xml "$@" && return 0
+      is_option_include_hugepages "$@" && return 0
+      # is_option_include_only_keyboard_and_mouse "$@" && return 0
+      is_option_output_event_paths "$@" && return 0
+      is_option_restart_service "$@" && return 0
+      is_option_set_permissions_to_user "$@" && return 0
+      is_option_undo_changes "$@" && return 0
+      return 1
 
     function pop_input_enum_if_last_option_contains_argument
     {
@@ -166,7 +191,9 @@
         # NOTE: Given Evdev currently likely does not support devices outside of Keyboards and Mice, I will comment this out for now.
         # "  --kbm-only\t\tInclude only Keyboard and/or Mouse related devices in Evdev."
 
+        "  --output-event-paths\tOutput Event device paths, instead of Input device paths."
         "  --restart-service\tRestart Libvirtd system service after setup."
+        "  --set-user\tSets user ownership of Libvirt Input devices to current user. Default is root."
         "  --undo-changes\tUndo changes; restore file backups."
       )
 
@@ -268,7 +295,7 @@
     function print_evdev
     {
       echo -e "${PREFIX}Below is a list of referenced device IDs, and their actual device IDs (Event and Input devices, respectively)."
-      echo -e "\nEvent ID\tSupported?\tInput ID"
+      echo -e "\nSupported?\tEvent ID\tInput ID"
 
       for input_device in "${!ALL_INPUT_EVENT_DICTIONARY[@]}"; do
         local event_device="${ALL_INPUT_EVENT_DICTIONARY["${input_device}"]}"
@@ -286,41 +313,58 @@
         fi
 
         if "${device_is_not_supported}"; then
-          echo -en "${SET_COLOR_RED}"
+          supported_string="${SET_COLOR_RED}${supported_string}${RESET_COLOR}"
 
         else
-          echo -en "${SET_COLOR_GREEN}"
-          supported_string="Yes"
+          supported_string="${SET_COLOR_GREEN}Yes${RESET_COLOR}"
         fi
 
-        echo -en "${event_device}\t\t${supported_string}\t\t${input_device}${RESET_COLOR}\n"
+        echo -en "${supported_string}\t\t${event_device}\t\t${input_device}\n"
       done
 
       echo -e "\n${PREFIX}You may copy the following XML output, and append to a virtual machine's XML file.\n"
-      echo -e "${SET_COLOR_YELLOW}<qemu:commandline>"
+      echo -e "<qemu:commandline>"
 
       for input_device in "${!KEYBOARD_INPUT_INDEX_DICTIONARY[@]}"; do
         local -i index="${KEYBOARD_INPUT_INDEX_DICTIONARY["${input_device}"]}"
+        local event_device="${ALL_INPUT_EVENT_DICTIONARY["${input_device}"]}"
         echo -e "\t<qemu:arg value="-object"/>"
-        echo -e "\t<qemu:arg value="input-linux,id=kbd${index},evdev=/dev/input/by-id/${input_device},grab_all=on,repeat=on"/>"
+
+        if "${OUTPUT_EVENT_PATHS}"; then
+          echo -e "\t<qemu:arg value="input-linux,id=kbd${index},evdev=/dev/input/${event_device},grab_all=on,repeat=on"/>"
+        else
+          echo -e "\t<qemu:arg value="input-linux,id=kbd${index},evdev=/dev/input/by-id/${input_device},grab_all=on,repeat=on"/>"
+        fi
       done
 
       for input_device in "${!MOUSE_INPUT_INDEX_DICTIONARY[@]}"; do
         local -i index="${MOUSE_INPUT_INDEX_DICTIONARY["${input_device}"]}"
+        local event_device="${ALL_INPUT_EVENT_DICTIONARY["${input_device}"]}"
         echo -e "\t<qemu:arg value="-object"/>"
-        echo -e "\t<qemu:arg value="input-linux,id=mouse${index},evdev=/dev/input/by-id/${input_device}"/>"
+
+        if "${OUTPUT_EVENT_PATHS}"; then
+          echo -e "\t<qemu:arg value="input-linux,id=mouse${index},evdev=/dev/input/${event_device}"/>"
+        else
+          echo -e "\t<qemu:arg value="input-linux,id=mouse${index},evdev=/dev/input/by-id/${input_device}"/>"
+        fi
       done
 
-      # NOTE: Given Evdev currently likely does not support devices outside of Keyboards and Mice, I will comment this out for now.
+      # # NOTE: Given Evdev currently likely does not support devices outside of Keyboards and Mice, I will comment this out for now.
       # if ! "${EXCLUSIVE_KBM}"; then
       #   for input_device in "${!OTHER_INPUT_INDEX_DICTIONARY[@]}"; do
       #     local -i index="${OTHER_INPUT_INDEX_DICTIONARY["${input_device}"]}"
       #     # echo -e "\t<qemu:arg value="-object"/>"
-      #     # echo -e "\t<qemu:arg value="input-linux,id=PLACEHOLDER${index},evdev=/dev/input/by-id/${input_device}"/>"   # TODO: Replace "PLACEHOLDER" with appropriate device ID.
+
+      #     # TODO: Replace "PLACEHOLDER" with appropriate device ID.
+      #       if "${OUTPUT_EVENT_PATHS}"; then
+      #         echo -e "\t<qemu:arg value="input-linux,id=PLACEHOLDER${index},evdev=/dev/input/${event_device}"/>"
+      #       else
+      #         echo -e "\t<qemu:arg value="input-linux,id=PLACEHOLDER${index},evdev=/dev/input/by-id/${input_device}"/>"
+      #       fi
       #   done
       # fi
 
-      echo -e "/<qemu:commandline>${RESET_COLOR}"
+      echo -e "/<qemu:commandline>"
     }
 
     function prepare_files
@@ -426,13 +470,13 @@
         local keyboard_input_device="${partial_input_device}kbd"
         local mouse_input_device="${partial_input_device}mouse"
 
-        if is_string "${KEYBOARD_INPUT_INDEX_DICTIONARY["${keyboard_input_device}"]}"; then
+        if is_string "${KEYBOARD_INPUT_INDEX_DICTIONARY["${keyboard_input_device}"]}" &> /dev/null; then
           total_keyboard_devices=$(( total_keyboard_devices + 1 ))
           KEYBOARD_INPUT_INDEX_DICTIONARY["${input_device}"]="${total_keyboard_devices}"
           continue
         fi
 
-        if is_string "${KEYBOARD_INPUT_INDEX_DICTIONARY["${mouse_input_device}"]}"; then
+        if is_string "${KEYBOARD_INPUT_INDEX_DICTIONARY["${mouse_input_device}"]}" &> /dev/null; then
           total_mouse_devices=$(( total_mouse_devices + 1 ))
           MOUSE_INPUT_INDEX_DICTIONARY["${input_device}"]="${total_mouse_devices}"
           continue
@@ -469,20 +513,17 @@
         "${FILE_WATERMARK[@]}"
         ""
         "### User permissions ###"
-        "group = \"user\""
       )
 
       local -a file2_output=( "${FILE_WATERMARK[@]}" )
 
-      if "${UNDO_CHANGES}"; then
+      if "${SET_PERMISSIONS_TO_USER}"; then
         file1_output+=(
-          "user = \"${USER}\""
+          "user = \"${LOGIN_USER}\""
         )
       else
-        local -r login_user=$( who am i | awk '{print $1}' )
-
         file1_output+=(
-          "user = \"${login_user}\""
+          "user = \"root\""
         )
       fi
 
@@ -503,7 +544,6 @@
         )
 
         file2_output+=(
-          "# /dev/hugepages rw,"
         )
       else
         file1_output+=(
@@ -521,28 +561,31 @@
         for input_device in ${!KEYBOARD_INPUT_INDEX_DICTIONARY[@]}; do
           local event_device="${ALL_INPUT_EVENT_DICTIONARY["${input_device}"]}"
 
-          file1_cgroups_output+=(
-            "    \"/dev/input/by-id/${input_device}\","
-            "    \"/dev/input/by-id/${event_device}\","
-          )
+          if "${OUTPUT_EVENT_PATHS}"; then
+            file1_cgroups_output+=( "    \"/dev/input/${event_device}\"," )
+          else
+            file1_cgroups_output+=( "    \"/dev/input/by-id/${input_device}\"," )
+          fi
         done
 
         for input_device in ${!MOUSE_INPUT_INDEX_DICTIONARY[@]}; do
           local event_device="${ALL_INPUT_EVENT_DICTIONARY["${input_device}"]}"
 
-          file1_cgroups_output+=(
-            "    \"/dev/input/by-id/${input_device}\","
-            "    \"/dev/input/by-id/${event_device}\","
-          )
+          if "${OUTPUT_EVENT_PATHS}"; then
+            file1_cgroups_output+=( "    \"/dev/input/${event_device}\"," )
+          else
+            file1_cgroups_output+=( "    \"/dev/input/by-id/${input_device}\"," )
+          fi
         done
 
         # for input_device in ${!OTHER_INPUT_INDEX_DICTIONARY[@]}; do
         #   local event_device="${ALL_INPUT_EVENT_DICTIONARY["${input_device}"]}"
 
-        #   file1_cgroups_output+=(
-        #     "    \"/dev/input/by-id/${input_device}\","
-        #     "    \"/dev/input/by-id/${event_device}\","
-        #   )
+        #   if "${OUTPUT_EVENT_PATHS}"; then
+        #     file1_cgroups_output+=( "    \"/dev/input/${event_device}\"," )
+        #   else
+        #     file1_cgroups_output+=( "    \"/dev/input/by-id/${input_device}\"," )
+        #   fi
         # done
       fi
 
@@ -582,8 +625,8 @@
         )
 
         file2_output+=(
-          "# /dev/input/* rw,"
-          "# /dev/input/by-id/* rw,"
+          "#/dev/input/* rw,"
+          "#/dev/input/by-id/* rw,"
         )
       fi
 
