@@ -58,65 +58,83 @@
   # <summary>Usage</summary>
     function is_option_print_help
     {
-      if [[ "${1}" == "-h" ]] \
-        || [[ "${1}" == "--help" ]]; then
-        print_usage
-        exit 1
+      if [[ "${1}" != "-h" ]] \
+        && [[ "${1}" != "--help" ]]; then
+        return 1
       fi
+
+      print_usage
+      exit 1
     }
 
     function is_option_dump_xml
     {
-      if [[ "${1}" == "--dump-xml" ]]; then
-        print_output_to_log "Dumping QEMU commandlines in XML format."
-        DUMP_XML=true
+      if [[ "${1}" != "--dump-xml" ]]; then
+        return 1
       fi
+
+      print_output_to_log "Dumping QEMU commandlines in XML format."
+      DUMP_XML=true
     }
 
     function is_option_include_hugepages
     {
-      if [[ "${1}" == "--hugepages" ]]; then
-        print_output_to_log "Adding Hugepages support."
-        INCLUDE_HUGEPAGES=true
+      if [[ "${1}" != "--hugepages" ]]; then
+        return 1
       fi
+
+      print_output_to_log "Adding Hugepages support."
+      INCLUDE_HUGEPAGES=true
     }
 
-    # function is_option_include_only_keyboard_and_mouse
-    # {
-    #   if [[ "${1}" == "--kbm-only" ]]; then
-    #     EXCLUSIVE_KBM=true
-    #   fi
-    # }
+    function is_option_include_only_keyboard_and_mouse
+    {
+      if [[ "${1}" != "--kbm-only" ]]; then
+        return 1
+      fi
+
+      print_output_to_log "Whitelisting only Keyboard and Mouse devices."
+      EXCLUSIVE_KBM=true
+    }
 
     function is_option_output_event_paths
     {
-      if [[ "${1}" == "--output-event-paths" ]]; then
-        OUTPUT_EVENT_PATHS=true
-        print_output_to_log "Evdev output exclusive to Event paths."
+      if [[ "${1}" != "--output-event-paths" ]]; then
+        return 1
       fi
+
+      OUTPUT_EVENT_PATHS=true
+      print_output_to_log "Evdev output exclusive to Event paths."
+
     }
 
     function is_option_restart_service
     {
-      if [[ "${1}" == "--restart-service" ]]; then
-        RESTART_SERVICE=true
+      if [[ "${1}" != "--restart-service" ]]; then
+        return 1
       fi
+
+      RESTART_SERVICE=true
     }
 
     function is_option_set_permissions_to_user
     {
-      if [[ "${1}" == "--set-user" ]]; then
-        print_output_to_log "Set user for Libvirt input devices: '$LOGIN_USER'"
-        RESTART_SERVICE=true
+      if [[ "${1}" != "--set-user" ]]; then
+        return 1
       fi
+
+      print_output_to_log "Set user for Libvirt input devices: '${LOGIN_USER}'"
+      RESTART_SERVICE=true
     }
 
     function is_option_undo_changes
     {
-      if [[ "${1}" == "--undo-changes" ]]; then
-        print_output_to_log "Undoing changes."
-        UNDO_CHANGES=true
+      if [[ "${1}" != "--undo-changes" ]]; then
+        return 1
       fi
+
+      print_output_to_log "Undoing changes."
+      UNDO_CHANGES=true
     }
 
     function get_options
@@ -149,6 +167,7 @@
       is_option_set_permissions_to_user "$@" && return 0
       is_option_undo_changes "$@" && return 0
       return 1
+    }
 
     function pop_input_enum_if_last_option_contains_argument
     {
@@ -493,8 +512,6 @@
       #   return 0
       # fi
 
-      # echo -e "${PREFIX}Whitelisting only Keyboard and Mouse devices."
-
       if ! is_enum_not_empty "KEYBOARD_INPUT_INDEX_DICTIONARY"; then
         print_error_to_log "No Keyboard device(s) found."
         return 1
@@ -648,6 +665,14 @@
       fi
     }
 
+  function is_sudo_user
+  {
+    if [[ $( whoami ) != "root" ]]; then
+      print_error_to_log "User is not sudo or root."
+      return 1
+    fi
+  }
+
   function main
   {
     if ! is_sudo_user \
@@ -661,14 +686,6 @@
 
     if ! write_to_files; then
       print_fail_to_log "Could not generate Evdev setup."
-      return 1
-    fi
-  }
-
-  function is_sudo_user
-  {
-    if [[ $( whoami ) != "root" ]]; then
-      print_error_to_log "User is not sudo or root."
       return 1
     fi
   }
