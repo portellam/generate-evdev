@@ -6,7 +6,8 @@ Generates Evdev for the current system. Virtual KVM (Keyboard-Video-Mouse) switc
         -h, --help                Print this help and exit.
             --dump-xml            Dump QEMU commandline (XML) output to file.
             --hugepages           Include Hugepages as device for Libvirt/QEMU.
-            --output-event-paths  Output Event device paths, instead of Input device paths.
+            --output-event-paths  Output Event device paths only.
+            --output-input-paths  Output Input device paths only.
             --restart-service     Restart Libvirtd system service after setup.
             --set-user            Sets user ownership of Libvirt Input devices to current user. Default is root.
             --undo-changes        Undo changes; restore file backups.
