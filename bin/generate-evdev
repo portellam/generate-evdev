@@ -176,7 +176,7 @@
       fi
 
       while [[ "${1}" != "" ]]; do
-        parse_option "$@" || exit 1
+        parse_option $@ || exit 1     # <note>Do not change to "$@". Leave '$@' without quotes, as when this function is called by an outside script, the input will not shift correctly. Therefore, the given option will contain every option, bombing the function.</note>
         shift                         # <note>'shift' must remain in same scope to work.</note>
       done
     }
