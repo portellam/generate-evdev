@@ -392,13 +392,15 @@
         echo -en "${supported_string}\t\t${event_device}\t\t${input_device}\n"
       done
 
-      echo -e "\nYou may copy the following XML output, and append to a virtual machine's XML file.\n"
+      echo -e "\nYou may copy the following XML output, and append to a virtual machine's XML file."
+      echo -e "\n${SET_COLOR_YELLOW}Note:${RESET_COLOR} Please update an Evdev VM's XML with any changes. Otherwise, an Evdev VM will likely fail to start."
+      echo -e "\n${SET_COLOR_RED}Warning:${RESET_COLOR} If an error occurs for either an event device (\"Could not open...\"), or an input device (\"... is not a valid Evdev device\"), then you should remove the affected device entry. Such a device is invalid and it is safe to exclude."
 
       local -r qemu_begin_tag="<qemu:commandline>"
       local -r qemu_end_tag="</qemu:commandline>"
-      local -r qemu_object="\t<qemu:arg value="-object"/>"
+      local -r qemu_object="\t<qemu:arg value=\"-object\"/>"
 
-      echo "${qemu_begin_tag}"
+      echo -e "\n${qemu_begin_tag}"
 
       if "${DUMP_XML}"; then
         if ! sudo rm --force "${XML_DEST_PATH}" &> /dev/null; then
@@ -413,8 +415,8 @@
 
       for input_device in "${!KEYBOARD_INPUT_INDEX_DICTIONARY[@]}"; do
         local event_device="${ALL_INPUT_EVENT_DICTIONARY["${input_device}"]}"
-        local event_device_output="\t<qemu:arg value="input-linux,id=kbd${x},evdev=/dev/input/${event_device},grab_all=on,repeat=on"/>"
-        local input_device_output="\t<qemu:arg value="input-linux,id=kbd${y},evdev=/dev/input/by-id/${input_device},grab_all=on,repeat=on"/>"
+        local event_device_output="\t<qemu:arg value=\"input-linux,id=kbd${x},evdev=/dev/input/${event_device},grab_all=on,repeat=on\"/>"
+        local input_device_output="\t<qemu:arg value=\"input-linux,id=kbd${y},evdev=/dev/input/by-id/${input_device},grab_all=on,repeat=on\"/>"
 
         if "${OUTPUT_EVENT_PATHS}"; then
           echo -e "${qemu_object}\n${event_device_output}"
@@ -442,8 +444,8 @@
 
       for input_device in "${!MOUSE_INPUT_INDEX_DICTIONARY[@]}"; do
         local event_device="${ALL_INPUT_EVENT_DICTIONARY["${input_device}"]}"
-        local event_device_output="\t<qemu:arg value="input-linux,id=mouse${x},evdev=/dev/input/${event_device}"/>"
-        local input_device_output="\t<qemu:arg value="input-linux,id=mouse${y},evdev=/dev/input/by-id/${input_device}"/>"
+        local event_device_output="\t<qemu:arg value=\"input-linux,id=mouse${x},evdev=/dev/input/${event_device}\"/>"
+        local input_device_output="\t<qemu:arg value=\"input-linux,id=mouse${y},evdev=/dev/input/by-id/${input_device}\"/>"
 
         if "${OUTPUT_EVENT_PATHS}"; then
           echo -e "${qemu_object}\n${event_device_output}"
