@@ -394,7 +394,7 @@
 
       echo -e "\nYou may copy the following XML output, and append to a virtual machine's XML file."
       echo -e "\n${SET_COLOR_YELLOW}Note:${RESET_COLOR} Please update an Evdev VM's XML with any changes. Otherwise, an Evdev VM will likely fail to start."
-      echo -e "\n${SET_COLOR_RED}Warning:${RESET_COLOR} If an error occurs for either an event device (\"Could not open...\"), or an input device (\"... is not a valid Evdev device\"), then you should remove the affected device entry. Such a device is invalid and it is safe to exclude."
+      echo -e "\n${SET_COLOR_RED}Warning:${RESET_COLOR} If an Evdev VM fails to start with an error, for either an event device (\"Could not open...\") or an input device (\"... is not a valid Evdev device\"), then you should first restart the system service (see USAGE). If the error remains, please remove the affected device entry. Such a device is invalid and it is safe to exclude."
 
       local -r qemu_begin_tag="<qemu:commandline>"
       local -r qemu_end_tag="</qemu:commandline>"
