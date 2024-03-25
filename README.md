@@ -17,7 +17,7 @@
 Generates Evdev for the current system. A Virtual KVM (Keyboard-Video-Mouse) for Libvirt, a manager for QEMU/KVM virtual machines.
 
 1. [Evdev (Wikipedia)](https://en.wikipedia.org/wiki/Evdev)
-2. [Using Evdev Passthrough: Seamless VM Input (article)](https://passthroughpo.st/using-evdev-passthrough-seamless-vm-input/)
+2. [Evdev Passthrough Explained — Cheap, Seamless VM Input](https://passthroughpo.st/using-evdev-passthrough-seamless-vm-input/)
 3. [VFIO forum (Reddit)](https://old.reddit.com/r/VFIO)
 4. [PCI Passthrough guide (ArchLinux Wiki)](https://wiki.archlinux.org/title/PCI_passthrough_via_OVMF)
 
