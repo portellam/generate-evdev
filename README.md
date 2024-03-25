@@ -22,21 +22,21 @@ Generates Evdev for the current system. A Virtual KVM (Keyboard-Video-Mouse) for
 4. [PCI Passthrough guide (ArchLinux Wiki)](https://wiki.archlinux.org/title/PCI_passthrough_via_OVMF)
 
 ## 2. Download
-  - Clone the repository:
-    1. Open a Command Line Interface (CLI).
-      - Open a console emulator (for Debian systems: Konsole).
-      - Open a existing console: press `CTRL` + `ALT` + `F2`, `F3`, `F4`, `F5`, or `F6`.
-        - **To return to the desktop,** press `CTRL` + `ALT` + `F7`.
-        - `F1` is reserved for debug output of the Linux kernel.
-        - `F7` is reserved for video output of the desktop environment.
-        - `F8` and above are unused.
+- Clone the repository:
+  1. Open a Command Line Interface (CLI).
+    - Open a console emulator (for Debian systems: Konsole).
+    - Open a existing console: press `CTRL` + `ALT` + `F2`, `F3`, `F4`, `F5`, or `F6`.
+    - **To return to the desktop,** press `CTRL` + `ALT` + `F7`.
+    - `F1` is reserved for debug output of the Linux kernel.
+    - `F7` is reserved for video output of the desktop environment.
+    - `F8` and above are unused.
 
-    2. Change your directory to your home folder or anywhere safe: `cd ~`
-    3. Clone the repository: `git clone https://www.github.com/portellam/generate-evdev`
-  - Download the ZIP file:
-    1. Viewing from the top of the repository's (current) webpage, click the green `<> Code ` drop-down icon.
-    2. Click `Download ZIP`. Save this file.
-    3. Open the `.zip` file, then extract its contents.
+  2. Change your directory to your home folder or anywhere safe: `cd ~`
+  3. Clone the repository: `git clone https://www.github.com/portellam/generate-evdev`
+- Download the ZIP file:
+  1. Viewing from the top of the repository's (current) webpage, click the green `<> Code ` drop-down icon.
+  2. Click `Download ZIP`. Save this file.
+  3. Open the `.zip` file, then extract its contents.
 - To make this script executable, you must:
   1. Open the CLI (see above).
   2. Go to the directory of where the cloned/extracted repository folder is: `cd name_of_parent_folder/generate-evdev/`
@@ -57,7 +57,7 @@ Generates Evdev for the current system. A Virtual KVM (Keyboard-Video-Mouse) for
 
 ### 3.2. `generate-evdev`
 - From any folder, execute: `sudo bash generate-evdev`
-  - The CommandCLI's shell (bash) should recognize that the script file is located in `/usr/local/bin`.
+  - The CLI's shell (bash) should recognize that the script file is located in `/usr/local/bin`.
 
 ```
 -h, --help                Print this help and exit.
@@ -75,7 +75,7 @@ Generates Evdev for the current system. A Virtual KVM (Keyboard-Video-Mouse) for
 
 ### 4.2. Paths for project binaries and files
   - `/usr/local/bin/generate-evdev`
-  - `/usr/local/etc/enerate-evdev.d/`
+  - `/usr/local/etc/generate-evdev.d/`
 
 ## 5. Contact
 Did you encounter a bug? Do you need help? Notice any dead links? Please contact by [raising an issue](https://github.com/portellam/generate-evdev/issues) with the project itself.
