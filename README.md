@@ -1,8 +1,8 @@
 # generate-evdev
 ## Table of Contents
 - [1. About](#1-about)
-  - [1.1 Description](#11-description)
-  - [1.2. How to use](#12-how-to-use)
+  - [1.1. Description](#11-description)
+  - [1.2. How to use Evdev](#12-how-to-use)
   - [1.3. Links](#13-links)
 - [2. Download](#2-download)
 - [3. Usage](#3-usage)
