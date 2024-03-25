@@ -1,6 +1,9 @@
 # generate-evdev
 ## Table of Contents
 - [1. About](#1-about)
+  - [1.1 Description](#11-description)
+  - [1.2. How to use](#12-how-to-use)
+  - [1.3. Links](#13-links)
 - [2. Download](#2-download)
 - [3. Usage](#3-usage)
   - [3.1. `installer.bash`](#31-installerbash)
@@ -11,8 +14,13 @@
 - [5. Contact](#5-contact)
 
 ## 1. About
-Generates Evdev for the current system. A Virtual KVM (Keyboard-Video-Mouse) for Libvirt, a manager for QEMU/KVM virtual machines.
+### 1.1. Description
+Easily setup a virtual Keyboard-Video-Mouse (KVM) switch for Libvirt/QEMU Virtual Machines (VM). The go-to solution for multi-boxing setups on a budget.
 
+### 1.2. How to use
+1. Press `L-CTRL` + `R-CTRL` to switch between VMs.
+
+### 1.3. Links
 1. [Evdev (Wikipedia)](https://en.wikipedia.org/wiki/Evdev)
 2. [Evdev Passthrough Explained — Cheap, Seamless VM Input](https://passthroughpo.st/using-evdev-passthrough-seamless-vm-input/)
 3. [VFIO forum (Reddit)](https://old.reddit.com/r/VFIO)
