@@ -1,7 +1,4 @@
 # generate-evdev
-## Directory
-- [License](LICENSE.md)
-
 ## Table of Contents
 - [1. About](#1-about)
 - [2. Download](#2-download)
