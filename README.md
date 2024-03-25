@@ -1,27 +1,38 @@
 # generate-evdev
-## Directory
-- [License](LICENSE.md)
-
 ## Table of Contents
 - [1. About](#1-about)
+  - [1.1 Description](#11-description)
+  - [1.2. How to use](#12-how-to-use)
+  - [1.3. Links](#13-links)
 - [2. Download](#2-download)
-- [3. Usage](#2-usage)
+- [3. Usage](#3-usage)
   - [3.1. `installer.bash`](#31-installerbash)
   - [3.2. `generate-evdev`](#32-generate-evdev)
 - [4. Filenames and pathnames modified](#4-filenames-and-pathnames-modified)
   - [4.1. System configuration files](#41-system-configuration-files)
   - [4.2. Paths for project binaries and files](#42-paths-for-project-binaries-and-files)
-- [5. Contact](#4-contact)
+- [5. Contact](#5-contact)
 
-### 1. About
-Generates Evdev for the current system. A Virtual KVM (Keyboard-Video-Mouse) for Libvirt, a manager for QEMU/KVM virtual machines.
+## 1. About
+### 1.1. Description
+Easily setup a virtual Keyboard-Video-Mouse (KVM) switch for Libvirt/QEMU Virtual Machines (VM). The go-to solution for multi-boxing setups on a budget.
 
+### 1.2. How to use
+1. Press `L-CTRL` + `R-CTRL` to switch between VMs.
+
+### 1.3. Links
 1. [Evdev (Wikipedia)](https://en.wikipedia.org/wiki/Evdev)
-2. [Using Evdev Passthrough: Seamless VM Input (article)](https://passthroughpo.st/using-evdev-passthrough-seamless-vm-input/)
+2. [Evdev Passthrough Explained — Cheap, Seamless VM Input](https://passthroughpo.st/using-evdev-passthrough-seamless-vm-input/)
 3. [VFIO forum (Reddit)](https://old.reddit.com/r/VFIO)
 4. [PCI Passthrough guide (ArchLinux Wiki)](https://wiki.archlinux.org/title/PCI_passthrough_via_OVMF)
 
 ## 2. Download
+- To download this script, you may:
+  - Download the ZIP file:
+    1. Viewing from the top of the repository's (current) webpage, click the green `<> Code ` drop-down icon.
+    2. Click `Download ZIP`. Save this file.
+    3. Open the `.zip` file, then extract its contents.
+
   - Clone the repository:
     1. Open a Command Line Interface (CLI).
       - Open a console emulator (for Debian systems: Konsole).
@@ -33,10 +44,7 @@ Generates Evdev for the current system. A Virtual KVM (Keyboard-Video-Mouse) for
 
     2. Change your directory to your home folder or anywhere safe: `cd ~`
     3. Clone the repository: `git clone https://www.github.com/portellam/generate-evdev`
-  - Download the ZIP file:
-    1. Viewing from the top of the repository's (current) webpage, click the green `<> Code ` drop-down icon.
-    2. Click `Download ZIP`. Save this file.
-    3. Open the `.zip` file, then extract its contents.
+
 - To make this script executable, you must:
   1. Open the CLI (see above).
   2. Go to the directory of where the cloned/extracted repository folder is: `cd name_of_parent_folder/generate-evdev/`
@@ -55,9 +63,9 @@ Generates Evdev for the current system. A Virtual KVM (Keyboard-Video-Mouse) for
   -u, --uninstall  Uninstall generate-evdev from system.
 ```
 
-#### 3.2. `generate-evdev`
+### 3.2. `generate-evdev`
 - From any folder, execute: `sudo bash generate-evdev`
-  - The CommandCLI's shell (bash) should recognize that the script file is located in `/usr/local/bin`.
+  - The CLI's shell (bash) should recognize that the script file is located in `/usr/local/bin`.
 
 ```
 -h, --help                Print this help and exit.
@@ -69,13 +77,14 @@ Generates Evdev for the current system. A Virtual KVM (Keyboard-Video-Mouse) for
     --set-user            Sets user ownership of Libvirt Input devices to current user. Default is root.
     --undo-changes        Undo changes; restore file backups.
 ```
+
 ## 4. Filenames and pathnames modified
 ### 4.1. System configuration files
   - `/etc/libvirt/qemu.conf`
 
 ### 4.2. Paths for project binaries and files
   - `/usr/local/bin/generate-evdev`
-  - `/usr/local/etc/enerate-evdev.d/`
+  - `/usr/local/etc/generate-evdev.d/`
 
 ## 5. Contact
 Did you encounter a bug? Do you need help? Notice any dead links? Please contact by [raising an issue](https://github.com/portellam/generate-evdev/issues) with the project itself.
