@@ -13,7 +13,7 @@
   - [4.2. Paths for project binaries and files](#42-paths-for-project-binaries-and-files)
 - [5. Contact](#4-contact)
 
-### 1. About
+## 1. About
 Generates Evdev for the current system. A Virtual KVM (Keyboard-Video-Mouse) for Libvirt, a manager for QEMU/KVM virtual machines.
 
 1. [Evdev (Wikipedia)](https://en.wikipedia.org/wiki/Evdev)
@@ -55,7 +55,7 @@ Generates Evdev for the current system. A Virtual KVM (Keyboard-Video-Mouse) for
   -u, --uninstall  Uninstall generate-evdev from system.
 ```
 
-#### 3.2. `generate-evdev`
+### 3.2. `generate-evdev`
 - From any folder, execute: `sudo bash generate-evdev`
   - The CommandCLI's shell (bash) should recognize that the script file is located in `/usr/local/bin`.
 
