@@ -2,7 +2,7 @@
 ## Table of Contents
 - [1. About](#1-about)
 - [2. Download](#2-download)
-- [3. Usage](#2-usage)
+- [3. Usage](#3-usage)
   - [3.1. `installer.bash`](#31-installerbash)
   - [3.2. `generate-evdev`](#32-generate-evdev)
 - [4. Filenames and pathnames modified](#4-filenames-and-pathnames-modified)
@@ -69,6 +69,7 @@ Generates Evdev for the current system. A Virtual KVM (Keyboard-Video-Mouse) for
     --set-user            Sets user ownership of Libvirt Input devices to current user. Default is root.
     --undo-changes        Undo changes; restore file backups.
 ```
+
 ## 4. Filenames and pathnames modified
 ### 4.1. System configuration files
   - `/etc/libvirt/qemu.conf`
