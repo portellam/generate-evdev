@@ -22,7 +22,8 @@ Generates Evdev for the current system. A Virtual KVM (Keyboard-Video-Mouse) for
 4. [PCI Passthrough guide (ArchLinux Wiki)](https://wiki.archlinux.org/title/PCI_passthrough_via_OVMF)
 
 ## 2. Download
-- Clone the repository:
+- To download this script, you may:
+  - Clone the repository:
     1. Open a Command Line Interface (CLI).
       - Open a console emulator (for Debian systems: Konsole).
       - Open a existing console: press `CTRL` + `ALT` + `F2`, `F3`, `F4`, `F5`, or `F6`.
