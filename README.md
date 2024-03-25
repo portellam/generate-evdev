@@ -11,7 +11,7 @@
 - [4. Filenames and pathnames modified](#4-filenames-and-pathnames-modified)
   - [4.1. System configuration files](#41-system-configuration-files)
   - [4.2. Paths for project binaries and files](#42-paths-for-project-binaries-and-files)
-- [5. Contact](#4-contact)
+- [5. Contact](#5-contact)
 
 ## 1. About
 Generates Evdev for the current system. A Virtual KVM (Keyboard-Video-Mouse) for Libvirt, a manager for QEMU/KVM virtual machines.
