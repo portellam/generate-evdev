@@ -23,6 +23,11 @@ Generates Evdev for the current system. A Virtual KVM (Keyboard-Video-Mouse) for
 
 ## 2. Download
 - To download this script, you may:
+  - Download the ZIP file:
+    1. Viewing from the top of the repository's (current) webpage, click the green `<> Code ` drop-down icon.
+    2. Click `Download ZIP`. Save this file.
+    3. Open the `.zip` file, then extract its contents.
+
   - Clone the repository:
     1. Open a Command Line Interface (CLI).
       - Open a console emulator (for Debian systems: Konsole).
@@ -34,10 +39,7 @@ Generates Evdev for the current system. A Virtual KVM (Keyboard-Video-Mouse) for
 
     2. Change your directory to your home folder or anywhere safe: `cd ~`
     3. Clone the repository: `git clone https://www.github.com/portellam/generate-evdev`
-  - Download the ZIP file:
-    1. Viewing from the top of the repository's (current) webpage, click the green `<> Code ` drop-down icon.
-    2. Click `Download ZIP`. Save this file.
-    3. Open the `.zip` file, then extract its contents.
+
 - To make this script executable, you must:
   1. Open the CLI (see above).
   2. Go to the directory of where the cloned/extracted repository folder is: `cd name_of_parent_folder/generate-evdev/`
