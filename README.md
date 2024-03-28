@@ -15,7 +15,7 @@
 
 ## 1. About
 ### 1.1. Description
-Easily setup a virtual Keyboard-Video-Mouse (KVM) switch for Libvirt/QEMU Virtual Machines (VM). The go-to solution for multi-boxing setups on a budget.
+Easily setup a virtual Keyboard-Video-Mouse (KVM) switch for Libvirt/QEMU Virtual Machines (VMs). The go-to solution for multi-boxing setups on a budget.
 
 ### 1.2. How to use Evdev
 1. Press `L-CTRL` + `R-CTRL` to switch between VMs.
