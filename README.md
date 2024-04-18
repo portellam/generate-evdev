@@ -1,7 +1,8 @@
-# generate-evdev
+# Generate Evdev
+### v1.0.0
 Easily setup a virtual Keyboard-Video-Mouse (KVM) switch for Libvirt/QEMU Virtual Machines (VMs).
 
-**[View develop branch...](https://github.com/portellam/generate-evdev/tree/develop)**
+**[Latest release](https://github.com/portellam/generate-evdev/releases/latest) | [View develop branch...](https://github.com/portellam/generate-evdev/tree/develop)**
 
 #### Related Projects:
 **[Auto X.Org](https://github.com/portellam/auto-xorg) | [Deploy VFIO](https://github.com/portellam/deploy-vfio) | [Guest Machine Guide](https://github.com/portellam/guest-machine-guide) | [Libvirt Hooks](https://github.com/portellam/libvirt-hooks) | [Power State Virtual Machine Manager](https://github.com/portellam/powerstate-virtmanager)**

@@ -7,6 +7,7 @@
 #                 and dumps output to file for use in QEMU VM XML.
 # Author(s):      Alex Portell <github.com/portellam>
 # Maintainer(s):  Alex Portell <github.com/portellam>
+# Version:        1.0.0
 #
 
 # TODO: create cronjob of last input.
@@ -14,6 +15,7 @@
 # <params>
   declare -gA ALL_INPUT_EVENT_DICTIONARY KEYBOARD_INPUT_INDEX_DICTIONARY MOUSE_INPUT_INDEX_DICTIONARY # OTHER_INPUT_INDEX_DICTIONARY
 
+  declare -r SCRIPT_VERSION="1.0.0"
   declare -r SCRIPT_NAME="$( basename ${0} )"
   declare -r SOURCE_DIR="/usr/local/etc/${SCRIPT_NAME}.d/"
 
@@ -239,7 +241,8 @@
 
       local -ar output=(
         "Usage:\tbash ${SCRIPT_NAME} [OPTION]"
-        "Generates Evdev setup for Libvirt/QEMU virtual machines.\n"
+        "Generates Evdev setup for Libvirt/QEMU virtual machines."
+        "Version ${SCRIPT_VERSION}.\n"
         "  -h, --help\t\tPrint this help and exit."
         "  --dump-xml\t\tDump QEMU commandline (XML) output to file."
         "  --hugepages\t\tInclude Hugepages as device for Libvirt/QEMU."
@@ -471,7 +474,8 @@
       # local -i x=1
       # local -i y=2
 
-      # NOTE: Given Evdev currently likely does not support devices outside of Keyboards and Mice, I will comment this out for now.
+      # NOTE: Given Evdev currently likely does not support devices outside of
+      # Keyboards and Mice, I will comment this out for now.
       # if ! "${EXCLUSIVE_KBM}"; then
       #   for input_device in "${!OTHER_INPUT_INDEX_DICTIONARY[@]}"; do
       #     local event_device="${ALL_INPUT_EVENT_DICTIONARY["${input_device}"]}"

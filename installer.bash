@@ -5,6 +5,7 @@
 # Description:    Manages project files.
 # Author(s):      Alex Portell <github.com/portellam>
 # Maintainer(s):  Alex Portell <github.com/portellam>
+# Version:        1.0.0
 #
 
 # <params>
@@ -12,6 +13,7 @@
     declare -g DO_INSTALL=true
     declare -g UPDATE_ETC_SOURCE_FILE=false
 
+  declare -r SCRIPT_VERSION="1.0.0"
   declare -r SCRIPT_NAME="$( basename ${0} )"
   declare -r REPO_NAME="generate-evdev"
 
@@ -111,7 +113,8 @@
 
       local -ar output=(
         "Usage:\tbash installer.bash [OPTION]"
-        "Manages ${REPO_NAME} binaries and files.\n"
+        "Manages ${REPO_NAME} binaries and files."
+        "Version ${SCRIPT_VERSION}.\n"
         "  -h, --help\t\tPrint this help and exit."
         "  -U, --update\t\tUpdate qemu.conf source file before install or uninstall."
         "  -i, --install\t\tInstall ${REPO_NAME} to system."
