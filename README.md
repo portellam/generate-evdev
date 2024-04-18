@@ -1,32 +1,31 @@
 # generate-evdev
+Easily setup a virtual Keyboard-Video-Mouse (KVM) switch for Libvirt/QEMU Virtual Machines (VM).
+
+**[View master branch...](https://github.com/portellam/generate-evdev/tree/develop)**
+
+#### Related Projects:
+**[Auto X.Org](https://github.com/portellam/auto-xorg) | [Deploy VFIO](https://github.com/portellam/deploy-vfio) | [Guest Machine Guide](https://github.com/portellam/guest-machine-guide) | [Libvirt Hooks](https://github.com/portellam/libvirt-hooks) | [Power State Virtual Machine Manager](https://github.com/portellam/powerstate-virtmanager)**
+
 ## Table of Contents
-- [1. About](#1-about)
-  - [1.1. Description](#11-description)
-  - [1.2. How to use Evdev](#12-how-to-use)
-  - [1.3. Links](#13-links)
-- [2. Download](#2-download)
-- [3. Usage](#3-usage)
-  - [3.1. `installer.bash`](#31-installerbash)
-  - [3.2. `generate-evdev`](#32-generate-evdev)
-- [4. Filenames and pathnames modified](#4-filenames-and-pathnames-modified)
-  - [4.1. System configuration files](#41-system-configuration-files)
-  - [4.2. Paths for project binaries and files](#42-paths-for-project-binaries-and-files)
-- [5. Contact](#5-contact)
+- [Why?](#why)
+- [How to Use](#how-to-use)
+- [Download](#download)
+- [Usage](#usage)
+  - [1. `installer.bash`](#1-installerbash)
+  - [2. `generate-evdev`](#2-generate-evdev)
+- [Filenames and pathnames modified](#filenames-and-pathnames-modified)
+  - [1. System configuration files](#1-system-configuration-files)
+  - [2. Paths for project binaries and files](#2-paths-for-project-binaries-and-files)
+- [Contact](#contact)
 
-## 1. About
-### 1.1. Description
-Easily setup a virtual Keyboard-Video-Mouse (KVM) switch for Libvirt/QEMU Virtual Machines (VM). The go-to solution for multi-boxing setups on a budget.
+## Contents
+### Why?
+Switch device inputs between Host and VM(s) or Guest(s). Requires devices to remain connected to be seen by Guests (similar to the limitations within the PS/2 cable standard, unlike USB).
 
-### 1.2. How to use Evdev
-1. Press `L-CTRL` + `R-CTRL` to switch between VMs.
+### How to Use
+1. Press `L-CTRL` + `R-CTRL` to switch between Guests.
 
-### 1.3. Links
-1. [Evdev (Wikipedia)](https://en.wikipedia.org/wiki/Evdev)
-2. [Evdev Passthrough Explained — Cheap, Seamless VM Input](https://passthroughpo.st/using-evdev-passthrough-seamless-vm-input/)
-3. [VFIO forum (Reddit)](https://old.reddit.com/r/VFIO)
-4. [PCI Passthrough guide (ArchLinux Wiki)](https://wiki.archlinux.org/title/PCI_passthrough_via_OVMF)
-
-## 2. Download
+### Download
 - To download this script, you may:
   - Download the ZIP file:
     1. Viewing from the top of the repository's (current) webpage, click the green `<> Code ` drop-down icon.
@@ -52,8 +51,8 @@ Easily setup a virtual Keyboard-Video-Mouse (KVM) switch for Libvirt/QEMU Virtua
     - Do **not** make any other script files executable. The installer will perform this action.
     - Do **not** make any non-script file executable. This is not necessary and potentially dangerous.
 
-## 3. Usage
-### 3.1. `installer.bash`
+### Usage
+#### 1. `installer.bash`
 - From within the project folder, execute: `sudo bash installer.bash`
 
 ```
@@ -63,7 +62,7 @@ Easily setup a virtual Keyboard-Video-Mouse (KVM) switch for Libvirt/QEMU Virtua
   -u, --uninstall  Uninstall generate-evdev from system.
 ```
 
-### 3.2. `generate-evdev`
+#### 2. `generate-evdev`
 - From any folder, execute: `sudo bash generate-evdev`
   - The CLI's shell (bash) should recognize that the script file is located in `/usr/local/bin`.
 
@@ -78,13 +77,13 @@ Easily setup a virtual Keyboard-Video-Mouse (KVM) switch for Libvirt/QEMU Virtua
     --undo-changes        Undo changes; restore file backups.
 ```
 
-## 4. Filenames and pathnames modified
-### 4.1. System configuration files
+### Filenames and pathnames modified
+#### 1. System configuration files
   - `/etc/libvirt/qemu.conf`
 
-### 4.2. Paths for project binaries and files
+#### 2. Paths for project binaries and files
   - `/usr/local/bin/generate-evdev`
   - `/usr/local/etc/generate-evdev.d/`
 
-## 5. Contact
+### Contact
 Did you encounter a bug? Do you need help? Notice any dead links? Please contact by [raising an issue](https://github.com/portellam/generate-evdev/issues) with the project itself.
