@@ -1,5 +1,5 @@
 # generate-evdev
-Easily setup a virtual Keyboard-Video-Mouse (KVM) switch for Libvirt/QEMU Virtual Machines (VM).
+Easily setup a virtual Keyboard-Video-Mouse (KVM) switch for Libvirt/QEMU Virtual Machines (VMs).
 
 **[View master branch...](https://github.com/portellam/generate-evdev/tree/develop)**
 
