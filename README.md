@@ -16,12 +16,9 @@ Virtual Machines (VMs).
 - [How to Use](#how-to-use)
 - [Download](#download)
 - [Usage](#usage)
-  - [1. `installer.bash`](#1-installerbash)
-  - [2. `generate-evdev`](#2-generate-evdev)
 - [Filenames and pathnames modified](#filenames-and-pathnames-modified)
-  - [1. System configuration files](#1-system-configuration-files)
-  - [2. Paths for project binaries and files](#2-paths-for-project-binaries-and-files)
 - [Contact](#contact)
+- [References](#references)
 
 ## Contents
 ### Why?
@@ -53,11 +50,9 @@ PS/2 cable standard, unlike USB).
 [github6]:   https://github.com/portellam/powerstate-virtmanager
 
 ### Documentation
-[VFIO article] | [VFIO forum] | [PCI Passthrough Guide]
-
-[VFIO Article]:          https://www.kernel.org/doc/html/latest/driver-api/vfio.html
-[VFIO Forum]:            https://old.reddit.com/r/VFIO
-[PCI Passthrough Guide]: https://wiki.archlinux.org/title/PCI_passthrough_via_OVMF
+- [What is VFIO?](#3)
+- [VFIO Forum](#2)
+- [PCI Passthrough Guide](#1)
 
 ### How to Use
 1. Press `L-CTRL` + `R-CTRL` to switch between Guests.
@@ -69,7 +64,9 @@ PS/2 cable standard, unlike USB).
        drop-down icon:
       - `···` on Codeberg.
       - `<> Code ` on GitHub.
+
     2. Click `Download ZIP`. Save this file.
+
     3. Open the `.zip` file, then extract its contents.
 
   - Clone the repository:
@@ -141,3 +138,17 @@ Did you encounter a bug? Do you need help? Please visit the **Issues page**
 
 [codeberg-issues]: https://codeberg.org/portellam/generate-evdev/issues
 [github-issues]:   https://github.com/portellam/generate-evdev/issues
+
+### References
+#### 1.
+**PCI passthrough via OVMF**. ArchWiki. Accessed June 14, 2024.
+<sup>https://wiki.archlinux.org/title/PCI_passthrough_via_OVMF.</sup>
+
+#### 2.
+**r/VFIO**. Accessed June 14, 2024.
+<sup>https://www.reddit.com/r/VFIO/.</sup>
+
+#### 3.
+**VFIO - ‘Virtual Function I/O’ - The Linux Kernel Documentation**.
+The linux kernel. Accessed June 14, 2024.
+<sup>https://www.kernel.org/doc/html/latest/driver-api/vfio.html.</sup>
