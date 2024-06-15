@@ -55,10 +55,13 @@ PS/2 cable standard, unlike USB).
 - [PCI Passthrough Guide](#1)
 
 ### How to Use
-1. Press `L-CTRL` + `R-CTRL` to switch between Guests.
+Press `L-CTRL` + `R-CTRL` to switch between Guests.
 
 ### Download
 - To download this script, you may:
+  - Download the Latest Release:&ensp;[Codeberg][codeberg-releases],
+[GitHub][github-releases]
+
   - Download the ZIP file:
     1. Viewing from the top of the repository's (current) webpage, click the
        drop-down icon:
