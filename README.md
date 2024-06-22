@@ -19,18 +19,18 @@ between Host and Guest(s).
     - [6.1. Verify Installer is Executable](#61-verify-script-is-executable)
     - [6.2. `installer.bash`](#62-installerbash)
     - [6.3. `generate-evdev`](#63-generate-evdev)
-    - [6.4. ](#64-input-macro-to-switch-between-vms)
+    - [6.4. Input Macro to Switch Between Guests](#64-input-macro-to-switch-between-guests)
 - [7. Filenames and Pathnames Modified by Generate Evdev](#7-filenames-and-pathnames-modified-by-generate-evdev)
     - [7.1. System Files](#71-system-files)
     - [7.2. Binaries and Files](#72-binaries-and-files)
-- [8. Contact](#contact)
-- [9. References](#references)
+- [8. Contact](#8-contact)
+- [9. References](#9-references)
 
 ## Contents
 ### 1. Why?
-Switch device inputs between Host and VM(s) or Guest(s). Requires devices to
-remain connected to be seen by Guests (similar to the limitations within the
-PS/2 cable standard, unlike USB).
+Switch device inputs between Host and Guest(s). Requires devices to remain
+connected to be seen and usable by Guests (similar to the limitations within the
+old PS/2 cable standard, unlike USB).
 
 ### 2. Related Projects
 | Project                             | Codeberg          | GitHub          |
@@ -149,11 +149,11 @@ or UEFI).
     --undo-changes        Undo changes; restore file backups.
 ```
 
-#### 6.4. Input Macro to Switch Between VMs
-To switch input devices between the Host machine and any running VMs, an input
+#### 6.4. Input Macro to Switch Between Guests
+To switch input devices between the Host machine and any running Guest, an input
 macro must be pressed. The default is `L-CTRL` + `R-CTRL`. This macro may be
-changed for each individual VM in its XML configuration. You may review the
-[Libvirt documentation](#4) to learn more.
+changed for each individual Guest in its XML configuration. You may review the
+[Libvirt documentation](#5) to learn more.
 
 ### 7. Filenames and Pathnames Modified by Generate Evdev
 #### 7.1. System Files
@@ -185,5 +185,10 @@ The linux kernel. Accessed June 14, 2024.
 <sup>https://www.reddit.com/r/VFIO/.</sup>
 
 #### 4.
-**libvirt/libvirt - XML Design Format** GitHub. Accessed June 18, 2024.
+**XML Design Format**. GitHub - libvirt/libvirt. Accessed June 18, 2024.
+<sup>https://github.com/libvirt/libvirt/blob/master/docs/formatdomain.rst.</sup>
+
+#### 5.
+**XML Design Format: Input Devices**. GitHub - libvirt/libvirt.Accessed June 18,
+2024.
 <sup>https://github.com/libvirt/libvirt/blob/master/docs/formatdomain.rst.</sup>
