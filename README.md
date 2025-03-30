@@ -117,7 +117,7 @@ Press `L-CTRL` + `R-CTRL` to switch between Host and Guest.
   - `/usr/local/etc/generate-evdev.d/`
 
 ### 7. Contact
-Wish to recommend a project? Do you need help? Please visit the [Issues][71] page.
+Do you need help? Please visit the [Issues][71] page.
 
 [71]: https://github.com/portellam/generate-evdev/issues
 
