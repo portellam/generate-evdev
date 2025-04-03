@@ -4,7 +4,7 @@ Easily setup a virtual Keyboard-Video-Mouse (KVM) switch for Libvirt/QEMU
 Virtual Machines (VMs).
 
 ## [Download](#4-download)
-#### View this repository on [Codeberg][01], [GitHub][02].
+#### View this repository on [Codeberg][01] or [GitHub][02].
 [01]: https://codeberg.org/portellam/generate-evdev
 [02]: https://github.com/portellam/generate-evdev
 ##
@@ -38,7 +38,7 @@ or [GitHub][22].
 - Hardware-Passthrough Guide[<sup>[1]</sup>](#1)
 
 ### 4. Download
-- Download the Latest Release:&ensp;[Codeberg][41], [GitHub][42]
+- Download the Latest Release:&ensp;[Codeberg][41] or [GitHub][42].
 
 - Download the `.zip` file:
     1. Viewing from the top of the repository's (current) webpage, click the
